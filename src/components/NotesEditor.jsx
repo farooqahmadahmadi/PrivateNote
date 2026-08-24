@@ -133,19 +133,21 @@ function NotesEditor() {
   // Delete Note
   // ==================================================
 
-  const handleDelete = (noteId = activeNoteId) => {
+  const handleDelete = (noteId = activeNoteId, askConfirmation = true) => {
     if (!noteId) {
       return;
     }
 
     const noteToDelete = notes.find((note) => note.id === noteId);
 
-    const confirmed = window.confirm(
-      `Delete "${noteToDelete?.title || "Untitled Note"}"?`,
-    );
+    if (askConfirmation) {
+      const confirmed = window.confirm(
+        `Delete "${noteToDelete?.title || "Untitled Note"}"?`,
+      );
 
-    if (!confirmed) {
-      return;
+      if (!confirmed) {
+        return;
+      }
     }
 
     if (saveTimer.current) {
@@ -192,7 +194,7 @@ function NotesEditor() {
       window.electronAPI.menu.onSaveNote(handleSave);
 
     const removeDeleteNoteListener = window.electronAPI.menu.onDeleteNote(() =>
-      handleDelete(),
+      handleDelete(activeNoteId, true),
     );
 
     return () => {
@@ -200,7 +202,7 @@ function NotesEditor() {
       removeSaveNoteListener?.();
       removeDeleteNoteListener?.();
     };
-  }, [activeNoteId, draftTitle, draftContent]);
+  }, [activeNoteId, draftTitle, draftContent, notes]);
 
   // ==================================================
   // UI
@@ -213,7 +215,7 @@ function NotesEditor() {
         activeNoteId={activeNoteId}
         onSelect={handleSelect}
         onCreate={handleCreate}
-        onDelete={handleDelete}
+        onDelete={(noteId) => handleDelete(noteId, false)}
       />
 
       <section className="flex min-w-0 flex-1 flex-col">
@@ -222,7 +224,7 @@ function NotesEditor() {
         ) : (
           <>
             <NoteToolbar
-              onDelete={() => handleDelete(activeNoteId)}
+              onDelete={() => handleDelete(activeNoteId, true)}
               onClose={handleClose}
             />
 
