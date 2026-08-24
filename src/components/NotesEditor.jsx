@@ -130,6 +130,20 @@ function NotesEditor() {
   };
 
   // ==================================================
+  // Toggle Privacy
+  // ==================================================
+
+  const handleTogglePrivacy = () => {
+    if (!activeNoteId) {
+      return;
+    }
+
+    updateNote(activeNoteId, {
+      isPrivate: activeNote?.isPrivate === false,
+    });
+  };
+
+  // ==================================================
   // Delete Note
   // ==================================================
 
@@ -224,7 +238,9 @@ function NotesEditor() {
         ) : (
           <>
             <NoteToolbar
+              note={activeNote}
               onDelete={() => handleDelete(activeNoteId, true)}
+              onTogglePrivacy={handleTogglePrivacy}
               onClose={handleClose}
             />
 
