@@ -21,10 +21,11 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
   }, [notes, search]);
 
   return (
-    <aside className="flex h-full w-full shrink-0 flex-col border-r border-slate-800 bg-slate-950 md:w-80 md:min-w-80">
-      <div className="border-b border-slate-800 p-4">
+    <aside className="flex h-full w-full flex-col border-r border-slate-800 bg-slate-950">
+      {/* Header */}
+      <div className="shrink-0 border-b border-slate-800 p-4">
         <div className="flex items-center justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h2 className="font-semibold text-white">Notes</h2>
 
             <p className="mt-1 text-xs text-slate-500">
@@ -35,12 +36,13 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
           <button
             type="button"
             onClick={onCreate}
-            className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+            className="shrink-0 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-500 active:scale-[0.98]"
           >
             + New
           </button>
         </div>
 
+        {/* Search */}
         <div className="mt-4">
           <input
             type="search"
@@ -52,7 +54,8 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         </div>
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-3">
+      {/* Notes */}
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
         {filteredNotes.length === 0 ? (
           <div className="px-3 py-10 text-center text-sm text-slate-600">
             {search ? "No matching notes." : "No notes yet."}

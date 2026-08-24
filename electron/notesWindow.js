@@ -14,34 +14,34 @@ export function createNotesWindow(isDevelopment) {
     return notesWindow;
   }
 
-  notesWindow = new BrowserWindow({
-    width: 900,
-    height: 700,
+notesWindow = new BrowserWindow({
+  width: 720,
+  height: 620,
 
-    minWidth: 500,
-    minHeight: 400,
+  // Very compact Sticky Notes size
+  minWidth: 260,
+  minHeight: 200,
 
-    resizable: true,
-    maximizable: true,
-    minimizable: true,
-    fullscreenable: true,
+  resizable: true,
+  maximizable: true,
+  minimizable: true,
+  fullscreenable: true,
 
-    show: false,
+  show: false,
 
-    backgroundColor: "#020617",
+  backgroundColor: "#020617",
 
-    title: "PrivateNotes — Notes",
+  title: "PrivateNotes — Notes",
 
-    webPreferences: {
-      preload: path.join(__dirname, "preload.cjs"),
+  webPreferences: {
+    preload: path.join(__dirname, "preload.cjs"),
 
-      contextIsolation: true,
-      nodeIntegration: false,
+    contextIsolation: true,
+    nodeIntegration: false,
 
-      sandbox: false,
-    },
-  });
-
+    sandbox: false,
+  },
+});
   notesWindow.once("ready-to-show", () => {
     notesWindow.show();
   });

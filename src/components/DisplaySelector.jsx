@@ -13,15 +13,17 @@ function DisplaySelector({
 }) {
   if (loading) {
     return (
-      <section className="w-full rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <div className="flex min-h-40 flex-col items-center justify-center gap-3">
+      <section className="w-full rounded-2xl border border-slate-800 bg-slate-900/50 p-5 sm:p-6">
+        <div className="flex min-h-36 flex-col items-center justify-center gap-3">
           <div className="h-7 w-7 animate-spin rounded-full border-2 border-slate-700 border-t-blue-500" />
 
           <p className="text-sm font-medium text-slate-400">
             Detecting displays...
           </p>
 
-          <p className="text-xs text-slate-600">Checking available monitors</p>
+          <p className="text-xs text-slate-600">
+            Checking available monitors
+          </p>
         </div>
       </section>
     );
@@ -30,9 +32,9 @@ function DisplaySelector({
   if (error) {
     return (
       <section className="w-full overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/[0.04]">
-        <div className="flex items-start gap-4 p-5 sm:p-6">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10">
-            <span className="text-lg">!</span>
+        <div className="flex items-start gap-3 p-4 sm:gap-4 sm:p-6">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 sm:h-10 sm:w-10">
+            <span className="text-sm text-red-400 sm:text-lg">!</span>
           </div>
 
           <div className="min-w-0 flex-1">
@@ -40,12 +42,14 @@ function DisplaySelector({
               Display detection failed
             </h3>
 
-            <p className="mt-1 text-sm leading-6 text-red-400/80">{error}</p>
+            <p className="mt-1 text-xs leading-5 text-red-400/80 sm:text-sm sm:leading-6">
+              {error}
+            </p>
 
             <button
               type="button"
               onClick={onRefresh}
-              className="mt-4 rounded-lg bg-red-500/10 px-3.5 py-2 text-xs font-semibold text-red-300 transition hover:bg-red-500/20 active:scale-[0.98]"
+              className="mt-3 rounded-lg bg-red-500/10 px-3.5 py-2 text-xs font-semibold text-red-300 transition hover:bg-red-500/20 active:scale-[0.98]"
             >
               Try again
             </button>
@@ -55,18 +59,26 @@ function DisplaySelector({
     );
   }
 
+  const notesDisplay = displays.find(
+    (display) => getDisplayRole(display.id) === "notes",
+  );
+
+  const presentationDisplay = displays.find(
+    (display) => getDisplayRole(display.id) === "presentation",
+  );
+
   return (
     <section className="w-full">
       {/* ================================================== */}
-      {/* Section Header */}
+      {/* Header */}
       {/* ================================================== */}
 
       <div className="mb-5 flex flex-col gap-4 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-blue-400" />
+            <span className="h-2 w-2 shrink-0 rounded-full bg-blue-400" />
 
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-400">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-400 sm:text-[11px]">
               Display Setup
             </span>
           </div>
@@ -75,7 +87,7 @@ function DisplaySelector({
             Connected Displays
           </h2>
 
-          <p className="mt-1.5 text-xs leading-5 text-slate-500 sm:text-sm">
+          <p className="mt-1.5 max-w-xl text-xs leading-5 text-slate-500 sm:text-sm">
             Assign your monitors for notes and presentation output.
           </p>
         </div>
@@ -85,7 +97,7 @@ function DisplaySelector({
           onClick={onRefresh}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:border-slate-600 hover:bg-slate-800 hover:text-white active:scale-[0.98] sm:w-auto"
         >
-          <span className="text-sm">↻</span>
+          <span className="text-base">↻</span>
           Refresh
         </button>
       </div>
@@ -94,50 +106,44 @@ function DisplaySelector({
       {/* Summary */}
       {/* ================================================== */}
 
-      <div className="mb-5 grid grid-cols-1 gap-3 min-[500px]:grid-cols-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
-            Detected
-          </p>
+      <div className="mb-5 grid grid-cols-1 gap-3 min-[480px]:grid-cols-3">
+        <SummaryCard
+          label="Detected"
+          value={displays.length}
+          suffix={displays.length === 1 ? "display" : "displays"}
+        />
 
-          <div className="mt-1 flex items-end gap-2">
-            <span className="text-xl font-semibold text-white">
-              {displays.length}
-            </span>
+        <SummaryCard
+          label="Notes Output"
+          value={
+            notesDisplay
+              ? notesDisplay.label ||
+                notesDisplay.name ||
+                `Display ${notesDisplay.id}`
+              : "Not assigned"
+          }
+          tone="emerald"
+        />
 
-            <span className="pb-0.5 text-xs text-slate-500">
-              {displays.length === 1 ? "display" : "displays"}
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-500/70">
-            Notes Output
-          </p>
-
-          <p className="mt-1 truncate text-sm font-medium text-emerald-300">
-            {getAssignedLabel(displays, getDisplayRole, "notes")}
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.04] px-4 py-3">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-blue-500/70">
-            Presentation
-          </p>
-
-          <p className="mt-1 truncate text-sm font-medium text-blue-300">
-            {getAssignedLabel(displays, getDisplayRole, "presentation")}
-          </p>
-        </div>
+        <SummaryCard
+          label="Presentation"
+          value={
+            presentationDisplay
+              ? presentationDisplay.label ||
+                presentationDisplay.name ||
+                `Display ${presentationDisplay.id}`
+              : "Not assigned"
+          }
+          tone="blue"
+        />
       </div>
 
       {/* ================================================== */}
-      {/* Displays */}
+      {/* Display Grid */}
       {/* ================================================== */}
 
       {displays.length > 0 ? (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {displays.map((display, index) => (
             <DisplayCard
               key={display.id}
@@ -151,7 +157,7 @@ function DisplaySelector({
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 px-6 py-12 text-center">
+        <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 px-5 py-10 text-center sm:px-6 sm:py-12">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-lg">
             🖥
           </div>
@@ -179,9 +185,9 @@ function DisplaySelector({
       {/* ================================================== */}
 
       {primaryDisplay && (
-        <div className="mt-4 flex flex-col gap-2 rounded-xl border border-slate-800/70 bg-slate-900/30 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex min-w-0 flex-col gap-1.5 rounded-xl border border-slate-800/70 bg-slate-900/30 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
           <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
 
             <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
               Primary Display
@@ -197,23 +203,43 @@ function DisplaySelector({
   );
 }
 
-/**
- * Returns a human-readable assignment status.
- * This does not change any display assignment logic.
- */
-function getAssignedLabel(displays, getDisplayRole, targetRole) {
-  const assignedDisplay = displays.find(
-    (display) => getDisplayRole(display.id) === targetRole,
-  );
-
-  if (!assignedDisplay) {
-    return "Not assigned";
-  }
+function SummaryCard({ label, value, suffix, tone }) {
+  const toneClasses = {
+    emerald:
+      "border-emerald-500/15 bg-emerald-500/[0.04] text-emerald-300",
+    blue: "border-blue-500/15 bg-blue-500/[0.04] text-blue-300",
+  };
 
   return (
-    assignedDisplay.name ||
-    assignedDisplay.label ||
-    `Display ${assignedDisplay.id}`
+    <div
+      className={[
+        "min-w-0 rounded-xl border px-4 py-3",
+        tone ? toneClasses[tone] : "border-slate-800 bg-slate-900/60",
+      ].join(" ")}
+    >
+      <p
+        className={[
+          "text-[9px] font-medium uppercase tracking-wider",
+          tone === "emerald"
+            ? "text-emerald-500/70"
+            : tone === "blue"
+              ? "text-blue-500/70"
+              : "text-slate-600",
+        ].join(" ")}
+      >
+        {label}
+      </p>
+
+      {suffix ? (
+        <div className="mt-1 flex items-end gap-2">
+          <span className="text-xl font-semibold text-white">{value}</span>
+
+          <span className="pb-0.5 text-xs text-slate-500">{suffix}</span>
+        </div>
+      ) : (
+        <p className="mt-1 truncate text-sm font-medium">{value}</p>
+      )}
+    </div>
   );
 }
 
