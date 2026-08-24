@@ -14,11 +14,7 @@ function normalizeNotes(notes) {
         typeof note.content === "string",
     )
     .map((note) => ({
-      id: note.id,
-      title: note.title || "Untitled Note",
-      content: note.content || "",
-      createdAt: note.createdAt || Date.now(),
-      updatedAt: note.updatedAt || Date.now(),
+      ...note,
       isPrivate: note.isPrivate !== false,
     }));
 }
@@ -58,9 +54,9 @@ export function createNote(note) {
     id: note.id,
     title: note.title || "Untitled Note",
     content: note.content || "",
+    isPrivate: note.isPrivate !== false,
     createdAt: note.createdAt || now,
     updatedAt: now,
-    isPrivate: note.isPrivate ?? true,
   };
 
   const success = saveNotes([newNote, ...notes]);
@@ -86,11 +82,7 @@ export function updateNote(noteId, changes) {
       : note,
   );
 
-  const success = saveNotes(updatedNotes);
-
-  if (!success) {
-    return null;
-  }
+  saveNotes(updatedNotes);
 
   return updatedNotes.find((note) => note.id === noteId) || null;
 }

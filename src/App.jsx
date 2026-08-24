@@ -9,12 +9,10 @@ import { useDisplays } from "./hooks/useDisplays.js";
 function App() {
   const windowType = window.location.hash;
 
-  // Presentation is the only secondary view.
   if (windowType === "#presentation") {
     return <PresentationView />;
   }
 
-  // Everything else is Home / Notebook.
   return <Home />;
 }
 
@@ -34,10 +32,6 @@ function Home() {
   return (
     <main className="min-h-screen w-full bg-slate-950 text-white">
       <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col">
-        {/* ================================================== */}
-        {/* Header */}
-        {/* ================================================== */}
-
         <header className="border-b border-slate-800 px-5 py-4 sm:px-8">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -54,17 +48,9 @@ function Home() {
           </div>
         </header>
 
-        {/* ================================================== */}
-        {/* Notebook */}
-        {/* ================================================== */}
-
         <section className="min-h-0 flex-1">
           <NotesEditor />
         </section>
-
-        {/* ================================================== */}
-        {/* Display Controls */}
-        {/* ================================================== */}
 
         <section className="border-t border-slate-800 bg-slate-950 px-5 py-5 sm:px-8">
           <div className="mx-auto w-full max-w-5xl">

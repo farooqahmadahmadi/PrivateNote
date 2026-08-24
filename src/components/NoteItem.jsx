@@ -5,6 +5,7 @@ function NoteItem({ note, active, onSelect, onDelete }) {
 
   const handleDelete = (event) => {
     event.stopPropagation();
+
     onDelete(note.id);
   };
 
@@ -17,8 +18,6 @@ function NoteItem({ note, active, onSelect, onDelete }) {
           : "border-slate-800 bg-slate-900 hover:bg-slate-800",
       ].join(" ")}
     >
-      {/* Note Content / Select */}
-
       <button
         type="button"
         onClick={() => onSelect(note.id)}
@@ -49,8 +48,6 @@ function NoteItem({ note, active, onSelect, onDelete }) {
           {formatNoteDate(note.updatedAt)}
         </div>
       </button>
-
-      {/* Delete */}
 
       <div className="mt-3 flex justify-end border-t border-slate-800 pt-2">
         <button

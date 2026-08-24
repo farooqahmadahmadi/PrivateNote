@@ -106,6 +106,20 @@ function NotesEditor() {
   };
 
   // ==================================================
+  // Toggle Privacy
+  // ==================================================
+
+  const handleTogglePrivacy = () => {
+    if (!activeNoteId || !activeNote) {
+      return;
+    }
+
+    updateNote(activeNoteId, {
+      isPrivate: activeNote.isPrivate === false,
+    });
+  };
+
+  // ==================================================
   // Close Note
   // ==================================================
 
@@ -127,20 +141,6 @@ function NotesEditor() {
     setDraftContent("");
 
     selectNote(null);
-  };
-
-  // ==================================================
-  // Toggle Privacy
-  // ==================================================
-
-  const handleTogglePrivacy = () => {
-    if (!activeNoteId) {
-      return;
-    }
-
-    updateNote(activeNoteId, {
-      isPrivate: activeNote?.isPrivate === false,
-    });
   };
 
   // ==================================================
@@ -239,8 +239,8 @@ function NotesEditor() {
           <>
             <NoteToolbar
               note={activeNote}
-              onDelete={() => handleDelete(activeNoteId, true)}
               onTogglePrivacy={handleTogglePrivacy}
+              onDelete={() => handleDelete(activeNoteId, true)}
               onClose={handleClose}
             />
 

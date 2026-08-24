@@ -2,13 +2,7 @@ import { useMemo, useState } from "react";
 
 import NoteItem from "./NoteItem.jsx";
 
-function NotesSidebar({
-  notes,
-  activeNoteId,
-  onSelect,
-  onCreate,
-  onDelete,
-}) {
+function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
   const [search, setSearch] = useState("");
 
   const filteredNotes = useMemo(() => {
@@ -28,8 +22,6 @@ function NotesSidebar({
 
   return (
     <aside className="flex h-full w-full shrink-0 flex-col border-r border-slate-800 bg-slate-950 md:w-80 md:min-w-80">
-      {/* Header */}
-
       <div className="border-b border-slate-800 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -49,8 +41,6 @@ function NotesSidebar({
           </button>
         </div>
 
-        {/* Search */}
-
         <div className="mt-4">
           <input
             type="search"
@@ -61,8 +51,6 @@ function NotesSidebar({
           />
         </div>
       </div>
-
-      {/* Notes */}
 
       <div className="flex-1 space-y-2 overflow-y-auto p-3">
         {filteredNotes.length === 0 ? (
