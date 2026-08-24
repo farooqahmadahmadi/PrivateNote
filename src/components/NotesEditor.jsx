@@ -15,6 +15,7 @@ function NotesEditor() {
     updateNote,
     deleteNote,
     selectNote,
+    toggleNotePrivacy,
   } = useNotes();
 
   const [draftTitle, setDraftTitle] = useState("");
@@ -110,13 +111,15 @@ function NotesEditor() {
   // ==================================================
 
   const handleTogglePrivacy = () => {
-    if (!activeNoteId || !activeNote) {
+    if (!activeNoteId) {
       return;
     }
 
-    updateNote(activeNoteId, {
-      isPrivate: activeNote.isPrivate === false,
-    });
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+    }
+
+    toggleNotePrivacy(activeNoteId);
   };
 
   // ==================================================
@@ -264,7 +267,9 @@ function NotesEditor() {
               />
 
               <div className="border-t border-slate-800 px-5 py-2 text-right sm:px-8">
-                <span className="text-[11px] text-emerald-500">Auto saved</span>
+                <span className="text-[11px] text-emerald-500">
+                  Auto saved
+                </span>
               </div>
             </div>
           </>
