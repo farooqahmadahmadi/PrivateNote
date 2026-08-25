@@ -22,9 +22,7 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
 
   return (
     <aside className="flex h-full w-full flex-col border-r border-slate-800 bg-slate-950">
-      {/* ==================================================
-          Header
-      ================================================== */}
+      {/* Header */}
 
       <div className="shrink-0 border-b border-slate-800 p-4">
         <div className="flex items-center justify-between gap-3">
@@ -58,13 +56,10 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         </div>
       </div>
 
-      {/* ==================================================
-          Notes
-          Scroll works, scrollbar hidden
-      ================================================== */}
+      {/* Notes */}
 
       <div
-        className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3"
+        className="notes-scrollbar min-h-0 flex-1 space-y-2 overflow-y-auto p-3"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -87,12 +82,14 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         )}
       </div>
 
-      {/* Hide scrollbar for Chrome / Electron */}
+      {/* Hide scrollbar */}
 
       <style>
         {`
-          aside > div:last-child::-webkit-scrollbar {
+          .notes-scrollbar::-webkit-scrollbar {
             display: none;
+            width: 0;
+            height: 0;
           }
         `}
       </style>

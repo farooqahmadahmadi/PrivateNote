@@ -201,21 +201,19 @@ function NotesEditor() {
   // Delete
   // ==================================================
 
-  const handleDelete = (noteId = activeNoteId, askConfirmation = true) => {
+  const handleDelete = (noteId = activeNoteId) => {
     if (!noteId) {
       return;
     }
 
     const noteToDelete = notes.find((note) => note.id === noteId);
 
-    if (askConfirmation) {
-      const confirmed = window.confirm(
-        `Delete "${noteToDelete?.title || "Untitled Note"}"?`,
-      );
+    const confirmed = window.confirm(
+      `Delete "${noteToDelete?.title || "Untitled Note"}"?`,
+    );
 
-      if (!confirmed) {
-        return;
-      }
+    if (!confirmed) {
+      return;
     }
 
     if (saveTimer.current) {
@@ -268,7 +266,7 @@ function NotesEditor() {
       window.electronAPI.menu.onSaveNote(handleSave);
 
     const removeDeleteNoteListener = window.electronAPI.menu.onDeleteNote(() =>
-      handleDelete(activeNoteId, true),
+      handleDelete(activeNoteId),
     );
 
     return () => {
@@ -311,9 +309,7 @@ function NotesEditor() {
 
   return (
     <main className="flex h-full w-full min-w-0 overflow-hidden bg-slate-950 text-white">
-      {/* ==================================================
-          Sidebar
-      ================================================== */}
+      {/* Sidebar */}
 
       <aside
         className={[
@@ -341,14 +337,12 @@ function NotesEditor() {
             activeNoteId={activeNoteId}
             onSelect={handleSelect}
             onCreate={handleCreate}
-            onDelete={(noteId) => handleDelete(noteId, true)}
+            onDelete={handleDelete}
           />
         </div>
       </aside>
 
-      {/* ==================================================
-          Editor
-      ================================================== */}
+      {/* Editor */}
 
       <section className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {!activeNote ? (
@@ -365,7 +359,7 @@ function NotesEditor() {
               <NoteToolbar
                 note={activeNote}
                 onReadingMode={handleOpenReading}
-                onDelete={() => handleDelete(activeNoteId, true)}
+                onDelete={() => handleDelete(activeNoteId)}
                 onClose={handleClose}
                 onToggleSidebar={() => setSidebarOpen((current) => !current)}
                 sidebarOpen={sidebarOpen}
