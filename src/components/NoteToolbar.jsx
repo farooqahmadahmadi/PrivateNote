@@ -23,50 +23,6 @@ function NoteToolbar({
         >
           {sidebarOpen ? "←" : "☰"}
         </button>
-
-        {/* Brand + Mode Status */}
-
-        <div className="min-w-0">
-          <span className="hidden text-xs font-medium uppercase tracking-[0.18em] text-slate-500 sm:block">
-            PrivateNotes
-          </span>
-
-          <div className="mt-0 flex items-center gap-2 sm:mt-1.5">
-            {/* Mode LED */}
-
-            <span className="relative flex h-2.5 w-2.5 shrink-0">
-              {/* Pulse */}
-
-              <span
-                className={[
-                  "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
-                  isPrivate ? "bg-emerald-400" : "bg-blue-400",
-                ].join(" ")}
-              />
-
-              {/* Light */}
-
-              <span
-                className={[
-                  "relative inline-flex h-2.5 w-2.5 rounded-full",
-                  "shadow-[0_0_8px_currentColor]",
-                  isPrivate
-                    ? "bg-emerald-400 text-emerald-400"
-                    : "bg-blue-400 text-blue-400",
-                ].join(" ")}
-              />
-            </span>
-
-            <span
-              className={[
-                "text-xs font-medium",
-                isPrivate ? "text-emerald-400" : "text-blue-400",
-              ].join(" ")}
-            >
-              {isPrivate ? "Private" : "Public"}
-            </span>
-          </div>
-        </div>
       </div>
 
       {/* Actions */}
