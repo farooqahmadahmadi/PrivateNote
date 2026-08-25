@@ -30,6 +30,16 @@ if (!gotSingleInstanceLock) {
       return;
     }
 
+    // ==================================================
+    // Screen Capture Protection
+    // Private = ON
+    // Public = OFF
+    // ==================================================
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setContentProtection(mode === "private");
+    }
+
     mainWindow?.webContents.send("app:mode-changed", mode);
   });
 
@@ -124,7 +134,8 @@ if (!gotSingleInstanceLock) {
   app.whenReady().then(() => {
     createApplicationMenu();
 
-    mainWindow = createMainWindow(isDevelopment);
+    // Starts in PRIVATE mode
+    mainWindow = createMainWindow(isDevelopment, "private");
 
     mainWindow.webContents.on("did-finish-load", () => {
       if (!pendingTextFile) {
@@ -140,7 +151,7 @@ if (!gotSingleInstanceLock) {
 
     app.on("activate", () => {
       if (mainWindow === null) {
-        mainWindow = createMainWindow(isDevelopment);
+        mainWindow = createMainWindow(isDevelopment, "private");
       }
     });
   });

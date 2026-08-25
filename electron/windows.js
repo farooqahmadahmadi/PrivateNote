@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function createMainWindow(isDevelopment) {
+export function createMainWindow(isDevelopment, mode = "private") {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
@@ -36,9 +36,23 @@ export function createMainWindow(isDevelopment) {
     },
   });
 
+  // ==================================================
+  // Screen Capture Protection
+  // ==================================================
+
+  mainWindow.setContentProtection(mode === "private");
+
+  // ==================================================
+  // Show Window
+  // ==================================================
+
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
   });
+
+  // ==================================================
+  // Load Application
+  // ==================================================
 
   if (isDevelopment) {
     mainWindow.loadURL("http://127.0.0.1:5173");
