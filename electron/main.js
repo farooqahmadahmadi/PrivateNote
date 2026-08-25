@@ -31,13 +31,13 @@ if (!gotSingleInstanceLock) {
     }
 
     // ==================================================
-    // Screen Capture Protection
-    // Private = ON
-    // Public = OFF
+    // Apply Mode Protection
+    // Private = Capture Protection + Hidden on Blur
+    // Public  = Normal Window
     // ==================================================
 
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.setContentProtection(mode === "private");
+      mainWindow.applyModeProtection(mode);
     }
 
     mainWindow?.webContents.send("app:mode-changed", mode);
