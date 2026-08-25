@@ -58,6 +58,24 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
 
   // ==================================================
+  // Text Files
+  // ==================================================
+
+  files: {
+    onOpenText: (callback) => {
+      const handler = (_event, filePath) => {
+        callback(filePath);
+      };
+
+      ipcRenderer.on("file:open-text", handler);
+
+      return () => {
+        ipcRenderer.removeListener("file:open-text", handler);
+      };
+    },
+  },
+
+  // ==================================================
   // Application Menu
   // ==================================================
 

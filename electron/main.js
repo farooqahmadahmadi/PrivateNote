@@ -8,55 +8,127 @@ let mainWindow = null;
 const isDevelopment = !app.isPackaged;
 
 // ==================================================
-// Application Mode
+// Single Instance
 // ==================================================
 
-ipcMain.handle("app:get-mode", () => {
-  return "private";
-});
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
 
-ipcMain.on("app:set-mode", (_event, mode) => {
-  if (mode !== "private" && mode !== "public") {
-    return;
-  }
+if (!gotSingleInstanceLock) {
+  app.quit();
+} else {
+  // ==================================================
+  // Application Mode
+  // ==================================================
 
-  mainWindow?.webContents.send("app:mode-changed", mode);
-});
+  ipcMain.handle("app:get-mode", () => {
+    return "private";
+  });
 
-// ==================================================
-// Reading Mode
-// ==================================================
+  ipcMain.on("app:set-mode", (_event, mode) => {
+    if (mode !== "private" && mode !== "public") {
+      return;
+    }
 
-ipcMain.on("reading:open", () => {
-  mainWindow?.webContents.send("reading:open");
-});
+    mainWindow?.webContents.send("app:mode-changed", mode);
+  });
 
-ipcMain.on("reading:close", () => {
-  mainWindow?.webContents.send("reading:close");
-});
+  // ==================================================
+  // Reading Mode
+  // ==================================================
 
-// ==================================================
-// Application
-// ==================================================
+  ipcMain.on("reading:open", () => {
+    mainWindow?.webContents.send("reading:open");
+  });
 
-app.whenReady().then(() => {
-  createApplicationMenu();
+  ipcMain.on("reading:close", () => {
+    mainWindow?.webContents.send("reading:close");
+  });
 
-  mainWindow = createMainWindow(isDevelopment);
+  // ==================================================
+  // Text File Opening
+  // ==================================================
 
-  app.on("activate", () => {
-    if (mainWindow === null) {
-      mainWindow = createMainWindow(isDevelopment);
+  const getTextFileFromArgs = (argv = []) => {
+    return (
+      argv.find((arg) => {
+        if (!arg || arg.startsWith("-")) {
+          return false;
+        }
+
+        return arg.toLowerCase().endsWith(".txt");
+      }) || null
+    );
+  };
+
+  let pendingTextFile = getTextFileFromArgs(process.argv);
+
+  const sendTextFileToRenderer = (filePath) => {
+    if (!filePath || !mainWindow) {
+      return;
+    }
+
+    if (mainWindow.webContents.isLoading()) {
+      pendingTextFile = filePath;
+      return;
+    }
+
+    mainWindow.webContents.send("file:open-text", filePath);
+  };
+
+  // ==================================================
+  // Second Instance
+  // ==================================================
+
+  app.on("second-instance", (_event, commandLine) => {
+    const filePath = getTextFileFromArgs(commandLine);
+
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+
+      mainWindow.show();
+      mainWindow.focus();
+    }
+
+    if (filePath) {
+      sendTextFileToRenderer(filePath);
     }
   });
-});
 
-// ==================================================
-// Close
-// ==================================================
+  // ==================================================
+  // Application
+  // ==================================================
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+  app.whenReady().then(() => {
+    createApplicationMenu();
+
+    mainWindow = createMainWindow(isDevelopment);
+
+    mainWindow.webContents.on("did-finish-load", () => {
+      if (pendingTextFile) {
+        const filePath = pendingTextFile;
+
+        pendingTextFile = null;
+
+        mainWindow?.webContents.send("file:open-text", filePath);
+      }
+    });
+
+    app.on("activate", () => {
+      if (mainWindow === null) {
+        mainWindow = createMainWindow(isDevelopment);
+      }
+    });
+  });
+
+  // ==================================================
+  // Close
+  // ==================================================
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  });
+}

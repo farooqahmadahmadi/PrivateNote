@@ -30,7 +30,6 @@ function NoteItem({ note, active, onSelect, onDelete }) {
         .trim()
         .replace(/\s+/g, "_") || "Untitled_Note"
     }.txt`;
-
     document.body.appendChild(anchor);
 
     anchor.click();

@@ -99,6 +99,72 @@ function NotesEditor() {
   }, [draftTitle, draftContent, activeNoteId, updateNote]);
 
   // ==================================================
+  // Open Text File
+  // ==================================================
+
+  useEffect(() => {
+    if (!window.electronAPI?.files?.onOpenText) {
+      return;
+    }
+
+    const removeFileListener = window.electronAPI.files.onOpenText(
+      async (filePath) => {
+        try {
+          if (!filePath) {
+            return;
+          }
+
+          const fileName =
+            filePath
+              .split(/[\\/]/)
+              .pop()
+              ?.replace(/\.txt$/i, "")
+              .trim() || "Untitled Note";
+
+          const response = await fetch(
+            `file://${filePath.replace(/\\/g, "/")}`,
+          );
+
+          const content = await response.text();
+
+          const note = createNote();
+
+          if (!note) {
+            return;
+          }
+
+          previousNoteId.current = note.id;
+
+          updateNote(note.id, {
+            title: fileName,
+            content,
+          });
+
+          selectNote(note.id);
+
+          setDraftTitle(fileName);
+          setDraftContent(content);
+
+          setReadingMode(false);
+          setReadingNote(null);
+
+          if (window.innerWidth <= 760) {
+            setSidebarOpen(false);
+          }
+        } catch (error) {
+          console.error("Failed to open text file:", error);
+
+          window.alert("Unable to open this text file.");
+        }
+      },
+    );
+
+    return () => {
+      removeFileListener?.();
+    };
+  }, [createNote, updateNote, selectNote]);
+
+  // ==================================================
   // Create
   // ==================================================
 
@@ -139,42 +205,6 @@ function NotesEditor() {
       title: draftTitle.trim() || "Untitled Note",
       content: draftContent,
     });
-  };
-
-  // ==================================================
-  // Export Note
-  // ==================================================
-
-  const handleExportNote = (noteId) => {
-    const note = notes.find((item) => item.id === noteId);
-
-    if (!note) {
-      return;
-    }
-
-    const title = note.title?.trim() || "Untitled Note";
-    const content = note.content || "";
-
-    const fileContent = `${title}\n\n${content}`;
-
-    const blob = new Blob([fileContent], {
-      type: "text/plain;charset=utf-8",
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = `${
-      title.replace(/[<>:"/\\|?*\x00-\x1F]/g, "").trim() || "Untitled Note"
-    }.txt`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
   };
 
   // ==================================================
@@ -374,7 +404,6 @@ function NotesEditor() {
             onSelect={handleSelect}
             onCreate={handleCreate}
             onDelete={handleDelete}
-            onExport={handleExportNote}
           />
         </div>
       </aside>
