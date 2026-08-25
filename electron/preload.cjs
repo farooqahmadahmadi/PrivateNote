@@ -62,6 +62,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // ==================================================
 
   files: {
+    readText: (filePath) => {
+      return ipcRenderer.invoke("file:read-text", filePath);
+    },
+
     onOpenText: (callback) => {
       const handler = (_event, filePath) => {
         callback(filePath);

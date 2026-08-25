@@ -121,11 +121,7 @@ function NotesEditor() {
               ?.replace(/\.txt$/i, "")
               .trim() || "Untitled Note";
 
-          const response = await fetch(
-            `file://${filePath.replace(/\\/g, "/")}`,
-          );
-
-          const content = await response.text();
+          const content = await window.electronAPI.files.readText(filePath);
 
           const note = createNote();
 

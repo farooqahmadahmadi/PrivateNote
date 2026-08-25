@@ -1,4 +1,5 @@
 import { app, ipcMain } from "electron";
+import fs from "node:fs/promises";
 
 import { createMainWindow } from "./windows.js";
 import { createApplicationMenu } from "./menu.js";
@@ -45,7 +46,7 @@ if (!gotSingleInstanceLock) {
   });
 
   // ==================================================
-  // Text File Opening
+  // Text File
   // ==================================================
 
   const getTextFileFromArgs = (argv = []) => {
@@ -61,6 +62,26 @@ if (!gotSingleInstanceLock) {
   };
 
   let pendingTextFile = getTextFileFromArgs(process.argv);
+
+  // ==================================================
+  // Read Text File
+  // ==================================================
+
+  ipcMain.handle("file:read-text", async (_event, filePath) => {
+    if (!filePath || typeof filePath !== "string") {
+      throw new Error("Invalid file path.");
+    }
+
+    if (!filePath.toLowerCase().endsWith(".txt")) {
+      throw new Error("Only TXT files are supported.");
+    }
+
+    return await fs.readFile(filePath, "utf8");
+  });
+
+  // ==================================================
+  // Send File To Renderer
+  // ==================================================
 
   const sendTextFileToRenderer = (filePath) => {
     if (!filePath || !mainWindow) {
@@ -106,13 +127,15 @@ if (!gotSingleInstanceLock) {
     mainWindow = createMainWindow(isDevelopment);
 
     mainWindow.webContents.on("did-finish-load", () => {
-      if (pendingTextFile) {
-        const filePath = pendingTextFile;
-
-        pendingTextFile = null;
-
-        mainWindow?.webContents.send("file:open-text", filePath);
+      if (!pendingTextFile) {
+        return;
       }
+
+      const filePath = pendingTextFile;
+
+      pendingTextFile = null;
+
+      mainWindow?.webContents.send("file:open-text", filePath);
     });
 
     app.on("activate", () => {
