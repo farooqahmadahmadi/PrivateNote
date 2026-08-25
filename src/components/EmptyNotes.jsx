@@ -6,11 +6,11 @@ function EmptyNotes() {
           📝
         </div>
 
-        <h2 className="mt-5 text-xl font-semibold text-white">
+        <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">
           No note selected
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-slate-500">
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-500">
           Select a note from the sidebar or create a new one.
         </p>
       </div>

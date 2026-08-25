@@ -3,7 +3,6 @@ import { formatNoteDate, getNotePreview } from "../utils/noteUtils.js";
 function NoteItem({ note, active, onSelect, onDelete }) {
   const handleDelete = (event) => {
     event.stopPropagation();
-
     onDelete(note.id);
   };
 
@@ -12,7 +11,6 @@ function NoteItem({ note, active, onSelect, onDelete }) {
 
     const title = note.title?.trim() || "Untitled Note";
     const content = note.content || "";
-
     const fileContent = `${title}\n\n${content}`;
 
     const blob = new Blob([fileContent], {
@@ -20,20 +18,19 @@ function NoteItem({ note, active, onSelect, onDelete }) {
     });
 
     const url = URL.createObjectURL(blob);
-
     const anchor = document.createElement("a");
 
     anchor.href = url;
+
     anchor.download = `${
       title
         .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
         .trim()
         .replace(/\s+/g, "_") || "Untitled_Note"
     }.txt`;
+
     document.body.appendChild(anchor);
-
     anchor.click();
-
     document.body.removeChild(anchor);
 
     URL.revokeObjectURL(url);
@@ -43,10 +40,9 @@ function NoteItem({ note, active, onSelect, onDelete }) {
     <div
       className={[
         "w-full rounded-xl border p-3 transition",
-
         active
           ? "border-blue-500/40 bg-blue-500/10"
-          : "border-slate-800 bg-slate-900 hover:bg-slate-800",
+          : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800",
       ].join(" ")}
     >
       {/* Note */}
@@ -56,7 +52,7 @@ function NoteItem({ note, active, onSelect, onDelete }) {
         onClick={() => onSelect(note.id)}
         className="w-full text-left"
       >
-        <div className="min-w-0 truncate text-sm font-medium text-slate-100">
+        <div className="min-w-0 truncate text-sm font-medium text-slate-900 dark:text-slate-100">
           {note.title || "Untitled Note"}
         </div>
 
@@ -64,21 +60,21 @@ function NoteItem({ note, active, onSelect, onDelete }) {
           {getNotePreview(note.content) || "Empty note"}
         </div>
 
-        <div className="mt-2 text-[11px] text-slate-600">
+        <div className="mt-2 text-[11px] text-slate-500 dark:text-slate-600">
           {formatNoteDate(note.updatedAt)}
         </div>
       </button>
 
       {/* Actions */}
 
-      <div className="mt-3 flex justify-end gap-2 border-t border-slate-800 pt-2">
+      <div className="mt-3 flex justify-end gap-2 border-t border-slate-200 pt-2 dark:border-slate-800">
         {/* Export */}
 
         <button
           type="button"
           onClick={handleExport}
           title="Export note as text file"
-          className="rounded-md border border-blue-500/15 bg-blue-500/5 px-2 py-1 text-[10px] font-medium text-blue-400 transition hover:border-blue-500/25 hover:bg-blue-500/10 hover:text-blue-300"
+          className="rounded-md border border-blue-500/15 bg-blue-500/5 px-2 py-1 text-[10px] font-medium text-blue-600 transition hover:border-blue-500/25 hover:bg-blue-500/10 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
         >
           Export
         </button>
@@ -89,7 +85,7 @@ function NoteItem({ note, active, onSelect, onDelete }) {
           type="button"
           onClick={handleDelete}
           title="Delete note"
-          className="rounded-md border border-red-500/15 bg-red-500/5 px-2 py-1 text-[10px] font-medium text-red-400 transition hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-300"
+          className="rounded-md border border-red-500/15 bg-red-500/5 px-2 py-1 text-[10px] font-medium text-red-600 transition hover:border-red-500/25 hover:bg-red-500/10 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300"
         >
           Delete
         </button>

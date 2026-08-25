@@ -22,7 +22,6 @@ function NotesEditor() {
   const [draftTitle, setDraftTitle] = useState("");
   const [draftContent, setDraftContent] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
   const [readingMode, setReadingMode] = useState(false);
   const [readingNote, setReadingNote] = useState(null);
 
@@ -144,7 +143,6 @@ function NotesEditor() {
 
           setDraftTitle(fileName);
           setDraftContent(content);
-
           setReadingMode(false);
           setReadingNote(null);
 
@@ -178,7 +176,6 @@ function NotesEditor() {
 
     setDraftTitle(note.title);
     setDraftContent(note.content);
-
     setReadingMode(false);
     setReadingNote(null);
 
@@ -255,7 +252,6 @@ function NotesEditor() {
 
     setDraftTitle("");
     setDraftContent("");
-
     setReadingMode(false);
     setReadingNote(null);
 
@@ -292,7 +288,6 @@ function NotesEditor() {
 
       setDraftTitle("");
       setDraftContent("");
-
       setReadingMode(false);
       setReadingNote(null);
     }
@@ -379,26 +374,22 @@ function NotesEditor() {
 
   return (
     <>
-      <main className="flex h-full w-full min-w-0 overflow-hidden bg-slate-950 text-white">
+      <main className="flex h-full w-full min-w-0 overflow-hidden bg-slate-100 text-slate-950 dark:bg-slate-950 dark:text-white">
         {/* Sidebar */}
 
         <aside
           className={[
             "h-full min-h-0 shrink-0 overflow-hidden",
             "transition-[width] duration-200 ease-in-out",
-
             sidebarOpen ? "w-80" : "w-0",
-
             "max-[760px]:absolute",
             "max-[760px]:inset-y-0",
             "max-[760px]:left-0",
             "max-[760px]:z-30",
             "max-[760px]:w-full",
-
             !sidebarOpen
               ? "max-[760px]:-translate-x-full"
               : "max-[760px]:translate-x-0",
-
             "max-[760px]:transition-transform",
           ].join(" ")}
         >
@@ -442,13 +433,13 @@ function NotesEditor() {
               <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
                 {/* Title */}
 
-                <div className="min-w-0 shrink-0 border-b border-slate-800 px-4 py-3 sm:px-8 sm:py-4">
+                <div className="min-w-0 shrink-0 border-b border-slate-200 px-4 py-3 dark:border-slate-800 sm:px-8 sm:py-4">
                   <input
                     type="text"
                     value={draftTitle}
                     onChange={(event) => setDraftTitle(event.target.value)}
                     placeholder="Note title"
-                    className="block w-full min-w-0 bg-transparent text-lg font-semibold text-white outline-none placeholder:text-slate-700 sm:text-2xl"
+                    className="block w-full min-w-0 bg-transparent text-lg font-semibold text-slate-950 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-700 sm:text-2xl"
                   />
                 </div>
 
@@ -459,13 +450,13 @@ function NotesEditor() {
                   onChange={(event) => setDraftContent(event.target.value)}
                   placeholder="Start writing..."
                   spellCheck
-                  className="block min-h-0 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-4 py-4 text-sm leading-6 text-slate-200 outline-none placeholder:text-slate-700 sm:px-8 sm:py-7 sm:text-base sm:leading-7"
+                  className="block min-h-0 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-4 py-4 text-sm leading-6 text-slate-700 outline-none placeholder:text-slate-400 dark:text-slate-200 dark:placeholder:text-slate-700 sm:px-8 sm:py-7 sm:text-base sm:leading-7"
                 />
 
                 {/* Status */}
 
-                <div className="min-w-0 shrink-0 border-t border-slate-800 px-4 py-2 text-right sm:px-8">
-                  <span className="text-[11px] text-emerald-500">
+                <div className="min-w-0 shrink-0 border-t border-slate-200 px-4 py-2 text-right dark:border-slate-800 sm:px-8">
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-500">
                     Auto saved
                   </span>
                 </div>

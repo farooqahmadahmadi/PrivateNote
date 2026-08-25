@@ -21,13 +21,15 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
   }, [notes, search]);
 
   return (
-    <aside className="flex h-full w-full flex-col border-r border-slate-800 bg-slate-950">
+    <aside className="flex h-full w-full flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
       {/* Header */}
 
-      <div className="shrink-0 border-b border-slate-800 p-4">
+      <div className="shrink-0 border-b border-slate-200 p-4 dark:border-slate-800">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="font-semibold text-white">Notes</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-white">
+              Notes
+            </h2>
 
             <p className="mt-1 text-xs text-slate-500">
               {notes.length} {notes.length === 1 ? "note" : "notes"}
@@ -37,7 +39,7 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
           <button
             type="button"
             onClick={onCreate}
-            className="shrink-0 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-500 active:scale-[0.98]"
+            className="shrink-0 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-500 active:scale-[0.98] dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             + New
           </button>
@@ -51,7 +53,7 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search notes..."
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-600 focus:border-blue-500"
+            className="w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-blue-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-600"
           />
         </div>
       </div>
@@ -66,7 +68,7 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         }}
       >
         {filteredNotes.length === 0 ? (
-          <div className="px-3 py-10 text-center text-sm text-slate-600">
+          <div className="px-3 py-10 text-center text-sm text-slate-500 dark:text-slate-600">
             {search ? "No matching notes." : "No notes yet."}
           </div>
         ) : (

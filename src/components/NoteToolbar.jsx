@@ -9,7 +9,7 @@ function NoteToolbar({
   const isPrivate = note?.isPrivate !== false;
 
   return (
-    <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-800 px-4 py-3 sm:px-8">
+    <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-800 sm:px-8">
       {/* Left */}
 
       <div className="flex min-w-0 items-center gap-3">
@@ -19,7 +19,7 @@ function NoteToolbar({
           type="button"
           onClick={onToggleSidebar}
           title={sidebarOpen ? "Hide notes" : "Show notes"}
-          className="shrink-0 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-2 text-xs font-medium text-slate-400 transition hover:border-slate-700 hover:bg-slate-800 hover:text-white"
+          className="shrink-0 rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:border-slate-400 hover:bg-slate-200 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
         >
           {sidebarOpen ? "←" : "☰"}
         </button>
@@ -34,7 +34,7 @@ function NoteToolbar({
           type="button"
           onClick={onReadingMode}
           title="Open Reading Mode"
-          className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-2.5 py-2 text-xs font-medium text-blue-400 transition hover:border-blue-500/30 hover:bg-blue-500/10 sm:px-3"
+          className="rounded-lg border border-blue-500/20 bg-blue-500/5 px-2.5 py-2 text-xs font-medium text-blue-600 transition hover:border-blue-500/30 hover:bg-blue-500/10 dark:text-blue-400 sm:px-3"
         >
           <span className="sm:hidden">Read</span>
 
@@ -47,7 +47,7 @@ function NoteToolbar({
           type="button"
           onClick={onDelete}
           title="Delete note"
-          className="rounded-lg border border-red-500/20 bg-red-500/5 px-2.5 py-2 text-xs font-medium text-red-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 sm:px-3"
+          className="rounded-lg border border-red-500/20 bg-red-500/5 px-2.5 py-2 text-xs font-medium text-red-600 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 sm:px-3"
         >
           <span className="sm:hidden">🗑</span>
 
@@ -60,7 +60,7 @@ function NoteToolbar({
           type="button"
           onClick={onClose}
           title="Close note"
-          className="rounded-lg border border-slate-700 px-2.5 py-2 text-xs font-medium text-slate-400 transition hover:bg-slate-800 hover:text-white sm:px-3"
+          className="rounded-lg border border-slate-300 px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white sm:px-3"
         >
           <span className="sm:hidden">×</span>
 

@@ -163,6 +163,34 @@ export function createApplicationMenu() {
     },
 
     // ==================================================
+    // Theme
+    // ==================================================
+
+    {
+      label: "Theme",
+      submenu: [
+        {
+          label: "Light",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send(
+              "theme:changed",
+              "light",
+            );
+          },
+        },
+
+        {
+          label: "Dark",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send(
+              "theme:changed",
+              "dark",
+            );
+          },
+        },
+      ],
+    },
+    // ==================================================
     // Reading
     // ==================================================
 

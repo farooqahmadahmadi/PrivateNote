@@ -6,6 +6,7 @@ import { getAppMode, saveAppMode } from "./services/appModeStorage.js";
 
 function App() {
   const [mode, setMode] = useState(() => getAppMode());
+  const [theme, setTheme] = useState("light");
 
   // ==================================================
   // Mode
@@ -17,7 +18,6 @@ function App() {
         const normalizedMode = newMode === "public" ? "public" : "private";
 
         saveAppMode(normalizedMode);
-
         setMode(normalizedMode);
       },
     );
@@ -28,26 +28,50 @@ function App() {
   }, []);
 
   // ==================================================
-  // Mode Change
+  // Theme
   // ==================================================
 
-  const handleModeChange = (newMode) => {
-    const normalizedMode = newMode === "public" ? "public" : "private";
+  useEffect(() => {
+    const removeThemeListener = window.electronAPI?.theme?.onChanged(
+      (newTheme) => {
+        const normalizedTheme = newTheme === "dark" ? "dark" : "light";
 
-    saveAppMode(normalizedMode);
+        setTheme(normalizedTheme);
+      },
+    );
 
-    setMode(normalizedMode);
+    return () => {
+      removeThemeListener?.();
+    };
+  }, []);
 
-    window.electronAPI?.app?.setMode(normalizedMode);
-  };
+  // ==================================================
+  // Apply Theme
+  // ==================================================
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   return (
-    <main className="flex h-dvh w-full flex-col overflow-hidden bg-slate-950 text-white">
+    <main
+      className={[
+        "flex h-dvh w-full flex-col overflow-hidden",
+        "bg-white text-slate-950",
+        "dark:bg-slate-950 dark:text-white",
+      ].join(" ")}
+    >
       {/* ==================================================
           Header
       ================================================== */}
 
-      <header className="shrink-0 border-b border-slate-800 px-4 py-3 sm:px-6">
+      <header
+        className={[
+          "shrink-0 border-b px-4 py-3 sm:px-6",
+          "border-slate-200",
+          "dark:border-slate-800",
+        ].join(" ")}
+      >
         <div className="flex items-center justify-between gap-4">
           {/* Brand */}
 
@@ -78,7 +102,7 @@ function App() {
 
                 mode === "private"
                   ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"
-                  : "bg-amber-400 shadow-[0_0_10px_rgba(96,165,250,0.8)]",
+                  : "bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.8)]",
               ].join(" ")}
             >
               <span
@@ -93,7 +117,6 @@ function App() {
               <span
                 className={[
                   "relative h-1.5 w-1.5 rounded-full",
-
                   mode === "private" ? "bg-emerald-100" : "bg-blue-100",
                 ].join(" ")}
               />
