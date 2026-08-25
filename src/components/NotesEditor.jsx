@@ -4,6 +4,7 @@ import EmptyNotes from "./EmptyNotes.jsx";
 import NoteToolbar from "./NoteToolbar.jsx";
 import NotesSidebar from "./NotesSidebar.jsx";
 import ReadingView from "./ReadingView.jsx";
+import AboutPrivateNotes from "./AboutPrivateNotes.jsx";
 
 import { useNotes } from "../hooks/useNotes.js";
 
@@ -24,6 +25,9 @@ function NotesEditor() {
 
   const [readingMode, setReadingMode] = useState(false);
   const [readingNote, setReadingNote] = useState(null);
+
+  // About
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const saveTimer = useRef(null);
   const previousNoteId = useRef(null);
@@ -149,7 +153,6 @@ function NotesEditor() {
           }
         } catch (error) {
           console.error("Failed to open text file:", error);
-
           window.alert("Unable to open this text file.");
         }
       },
@@ -331,10 +334,15 @@ function NotesEditor() {
       handleDelete(activeNoteId),
     );
 
+    const removeAboutListener = window.electronAPI.menu.onAbout(() => {
+      setAboutOpen(true);
+    });
+
     return () => {
       removeNewNoteListener?.();
       removeSaveNoteListener?.();
       removeDeleteNoteListener?.();
+      removeAboutListener?.();
     };
   }, [activeNoteId, draftTitle, draftContent, notes]);
 
@@ -370,99 +378,107 @@ function NotesEditor() {
   // ==================================================
 
   return (
-    <main className="flex h-full w-full min-w-0 overflow-hidden bg-slate-950 text-white">
-      {/* Sidebar */}
+    <>
+      <main className="flex h-full w-full min-w-0 overflow-hidden bg-slate-950 text-white">
+        {/* Sidebar */}
 
-      <aside
-        className={[
-          "h-full min-h-0 shrink-0 overflow-hidden",
-          "transition-[width] duration-200 ease-in-out",
+        <aside
+          className={[
+            "h-full min-h-0 shrink-0 overflow-hidden",
+            "transition-[width] duration-200 ease-in-out",
 
-          sidebarOpen ? "w-80" : "w-0",
+            sidebarOpen ? "w-80" : "w-0",
 
-          "max-[760px]:absolute",
-          "max-[760px]:inset-y-0",
-          "max-[760px]:left-0",
-          "max-[760px]:z-30",
-          "max-[760px]:w-full",
+            "max-[760px]:absolute",
+            "max-[760px]:inset-y-0",
+            "max-[760px]:left-0",
+            "max-[760px]:z-30",
+            "max-[760px]:w-full",
 
-          !sidebarOpen
-            ? "max-[760px]:-translate-x-full"
-            : "max-[760px]:translate-x-0",
+            !sidebarOpen
+              ? "max-[760px]:-translate-x-full"
+              : "max-[760px]:translate-x-0",
 
-          "max-[760px]:transition-transform",
-        ].join(" ")}
-      >
-        <div className="h-full w-full min-w-0">
-          <NotesSidebar
-            notes={notes}
-            activeNoteId={activeNoteId}
-            onSelect={handleSelect}
-            onCreate={handleCreate}
-            onDelete={handleDelete}
-          />
-        </div>
-      </aside>
-
-      {/* Editor */}
-
-      <section className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        {!activeNote ? (
-          <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-            <div className="min-h-0 min-w-0 flex-1">
-              <EmptyNotes />
-            </div>
+            "max-[760px]:transition-transform",
+          ].join(" ")}
+        >
+          <div className="h-full w-full min-w-0">
+            <NotesSidebar
+              notes={notes}
+              activeNoteId={activeNoteId}
+              onSelect={handleSelect}
+              onCreate={handleCreate}
+              onDelete={handleDelete}
+            />
           </div>
-        ) : (
-          <>
-            {/* Toolbar */}
+        </aside>
 
-            <div className="min-w-0 shrink-0">
-              <NoteToolbar
-                note={activeNote}
-                onReadingMode={handleOpenReading}
-                onDelete={() => handleDelete(activeNoteId)}
-                onClose={handleClose}
-                onToggleSidebar={() => setSidebarOpen((current) => !current)}
-                sidebarOpen={sidebarOpen}
-              />
+        {/* Editor */}
+
+        <section className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          {!activeNote ? (
+            <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
+              <div className="min-h-0 min-w-0 flex-1">
+                <EmptyNotes />
+              </div>
             </div>
+          ) : (
+            <>
+              {/* Toolbar */}
 
-            {/* Editor Content */}
-
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-              {/* Title */}
-
-              <div className="min-w-0 shrink-0 border-b border-slate-800 px-4 py-3 sm:px-8 sm:py-4">
-                <input
-                  type="text"
-                  value={draftTitle}
-                  onChange={(event) => setDraftTitle(event.target.value)}
-                  placeholder="Note title"
-                  className="block w-full min-w-0 bg-transparent text-lg font-semibold text-white outline-none placeholder:text-slate-700 sm:text-2xl"
+              <div className="min-w-0 shrink-0">
+                <NoteToolbar
+                  note={activeNote}
+                  onReadingMode={handleOpenReading}
+                  onDelete={() => handleDelete(activeNoteId)}
+                  onClose={handleClose}
+                  onToggleSidebar={() => setSidebarOpen((current) => !current)}
+                  sidebarOpen={sidebarOpen}
                 />
               </div>
 
-              {/* Content */}
+              {/* Editor Content */}
 
-              <textarea
-                value={draftContent}
-                onChange={(event) => setDraftContent(event.target.value)}
-                placeholder="Start writing..."
-                spellCheck
-                className="block min-h-0 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-4 py-4 text-sm leading-6 text-slate-200 outline-none placeholder:text-slate-700 sm:px-8 sm:py-7 sm:text-base sm:leading-7"
-              />
+              <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+                {/* Title */}
 
-              {/* Status */}
+                <div className="min-w-0 shrink-0 border-b border-slate-800 px-4 py-3 sm:px-8 sm:py-4">
+                  <input
+                    type="text"
+                    value={draftTitle}
+                    onChange={(event) => setDraftTitle(event.target.value)}
+                    placeholder="Note title"
+                    className="block w-full min-w-0 bg-transparent text-lg font-semibold text-white outline-none placeholder:text-slate-700 sm:text-2xl"
+                  />
+                </div>
 
-              <div className="min-w-0 shrink-0 border-t border-slate-800 px-4 py-2 text-right sm:px-8">
-                <span className="text-[11px] text-emerald-500">Auto saved</span>
+                {/* Content */}
+
+                <textarea
+                  value={draftContent}
+                  onChange={(event) => setDraftContent(event.target.value)}
+                  placeholder="Start writing..."
+                  spellCheck
+                  className="block min-h-0 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-4 py-4 text-sm leading-6 text-slate-200 outline-none placeholder:text-slate-700 sm:px-8 sm:py-7 sm:text-base sm:leading-7"
+                />
+
+                {/* Status */}
+
+                <div className="min-w-0 shrink-0 border-t border-slate-800 px-4 py-2 text-right sm:px-8">
+                  <span className="text-[11px] text-emerald-500">
+                    Auto saved
+                  </span>
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </section>
-    </main>
+            </>
+          )}
+        </section>
+      </main>
+
+      {/* About PrivateNotes */}
+
+      {aboutOpen && <AboutPrivateNotes onClose={() => setAboutOpen(false)} />}
+    </>
   );
 }
 
