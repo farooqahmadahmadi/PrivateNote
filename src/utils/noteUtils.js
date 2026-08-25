@@ -13,13 +13,14 @@ export function createEmptyNote() {
 
   return {
     id: createNoteId(),
-    title: "Untitled Note",
-    content: "",
-    createdAt: now,
-    updatedAt: now,
 
-    // New notes are private
-    isPrivate: true,
+    title: "Untitled Note",
+
+    content: "",
+
+    createdAt: now,
+
+    updatedAt: now,
   };
 }
 

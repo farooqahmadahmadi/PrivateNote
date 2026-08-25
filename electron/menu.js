@@ -2,6 +2,10 @@ import { app, BrowserWindow, Menu } from "electron";
 
 export function createApplicationMenu() {
   const template = [
+    // ==================================================
+    // File
+    // ==================================================
+
     {
       label: "File",
       submenu: [
@@ -12,6 +16,7 @@ export function createApplicationMenu() {
             BrowserWindow.getFocusedWindow()?.webContents.send("menu:new-note");
           },
         },
+
         {
           label: "Save",
           accelerator: "Ctrl+S",
@@ -21,9 +26,11 @@ export function createApplicationMenu() {
             );
           },
         },
+
         {
           type: "separator",
         },
+
         {
           label: "Delete Note",
           accelerator: "Ctrl+Delete",
@@ -33,9 +40,11 @@ export function createApplicationMenu() {
             );
           },
         },
+
         {
           type: "separator",
         },
+
         {
           label: "Exit",
           accelerator: "Alt+F4",
@@ -45,6 +54,10 @@ export function createApplicationMenu() {
         },
       ],
     },
+
+    // ==================================================
+    // Edit
+    // ==================================================
 
     {
       label: "Edit",
@@ -57,9 +70,11 @@ export function createApplicationMenu() {
           role: "redo",
           label: "Redo",
         },
+
         {
           type: "separator",
         },
+
         {
           role: "cut",
           label: "Cut",
@@ -79,6 +94,10 @@ export function createApplicationMenu() {
       ],
     },
 
+    // ==================================================
+    // View
+    // ==================================================
+
     {
       label: "View",
       submenu: [
@@ -86,26 +105,91 @@ export function createApplicationMenu() {
           role: "reload",
           label: "Reload",
         },
+
         {
           role: "forceReload",
           label: "Force Reload",
         },
+
         {
           type: "separator",
         },
+
         {
           role: "toggleDevTools",
           label: "Developer Tools",
         },
+
         {
           type: "separator",
         },
+
         {
           role: "togglefullscreen",
           label: "Fullscreen",
         },
       ],
     },
+
+    // ==================================================
+    // Mode
+    // ==================================================
+
+    {
+      label: "Mode",
+      submenu: [
+        {
+          label: "Private Mode",
+          accelerator: "Ctrl+Shift+P",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send(
+              "app:mode-changed",
+              "private",
+            );
+          },
+        },
+
+        {
+          label: "Public Mode",
+          accelerator: "Ctrl+Shift+U",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send(
+              "app:mode-changed",
+              "public",
+            );
+          },
+        },
+      ],
+    },
+
+    // ==================================================
+    // Reading
+    // ==================================================
+
+    {
+      label: "Reading",
+      submenu: [
+        {
+          label: "Open Reading Mode",
+          accelerator: "F11",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send("reading:open");
+          },
+        },
+
+        {
+          label: "Close Reading Mode",
+          accelerator: "Escape",
+          click: () => {
+            BrowserWindow.getFocusedWindow()?.webContents.send("reading:close");
+          },
+        },
+      ],
+    },
+
+    // ==================================================
+    // Window
+    // ==================================================
 
     {
       label: "Window",
@@ -114,12 +198,17 @@ export function createApplicationMenu() {
           role: "minimize",
           label: "Minimize",
         },
+
         {
           role: "close",
           label: "Close",
         },
       ],
     },
+
+    // ==================================================
+    // Help
+    // ==================================================
 
     {
       label: "Help",

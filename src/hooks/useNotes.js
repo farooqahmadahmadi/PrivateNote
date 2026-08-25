@@ -53,34 +53,6 @@ export function useNotes() {
   }, []);
 
   // ==================================================
-  // Toggle Private / Public
-  // ==================================================
-
-  const setNotePrivacy = useCallback(
-    (noteId, isPrivate) => {
-      return updateNote(noteId, {
-        isPrivate,
-      });
-    },
-    [updateNote],
-  );
-
-  const toggleNotePrivacy = useCallback(
-    (noteId) => {
-      const currentNote = getNotes().find((note) => note.id === noteId);
-
-      if (!currentNote) {
-        return null;
-      }
-
-      return updateNote(noteId, {
-        isPrivate: !currentNote.isPrivate,
-      });
-    },
-    [updateNote],
-  );
-
-  // ==================================================
   // Delete
   // ==================================================
 
@@ -120,8 +92,5 @@ export function useNotes() {
     updateNote,
     deleteNote,
     selectNote,
-
-    setNotePrivacy,
-    toggleNotePrivacy,
   };
 }

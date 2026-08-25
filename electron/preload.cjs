@@ -2,46 +2,59 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   // ==================================================
-  // Displays
+  // Application
   // ==================================================
 
-  displays: {
-    getAll: () => ipcRenderer.invoke("displays:get"),
+  app: {
+    getMode: () => ipcRenderer.invoke("app:get-mode"),
 
-    getPrimary: () => ipcRenderer.invoke("displays:get-primary"),
+    setMode: (mode) => {
+      ipcRenderer.send("app:set-mode", mode);
+    },
 
-    getBounds: (displayId) =>
-      ipcRenderer.invoke("displays:get-bounds", displayId),
+    onModeChanged: (callback) => {
+      const handler = (_event, mode) => callback(mode);
+
+      ipcRenderer.on("app:mode-changed", handler);
+
+      return () => {
+        ipcRenderer.removeListener("app:mode-changed", handler);
+      };
+    },
   },
 
   // ==================================================
-  // Notes Window
+  // Reading Mode
   // ==================================================
 
-  notes: {
-    open: (displayId) => ipcRenderer.invoke("notes:open", displayId),
+  reading: {
+    open: () => {
+      ipcRenderer.send("reading:open");
+    },
 
-    close: () => ipcRenderer.invoke("notes:close"),
+    close: () => {
+      ipcRenderer.send("reading:close");
+    },
 
-    isOpen: () => ipcRenderer.invoke("notes:is-open"),
+    onOpen: (callback) => {
+      const handler = () => callback();
 
-    moveToDisplay: (displayId) =>
-      ipcRenderer.invoke("notes:move-to-display", displayId),
-  },
+      ipcRenderer.on("reading:open", handler);
 
-  // ==================================================
-  // Presentation Window
-  // ==================================================
+      return () => {
+        ipcRenderer.removeListener("reading:open", handler);
+      };
+    },
 
-  presentation: {
-    open: (displayId) => ipcRenderer.invoke("presentation:open", displayId),
+    onClose: (callback) => {
+      const handler = () => callback();
 
-    close: () => ipcRenderer.invoke("presentation:close"),
+      ipcRenderer.on("reading:close", handler);
 
-    isOpen: () => ipcRenderer.invoke("presentation:is-open"),
-
-    moveToDisplay: (displayId) =>
-      ipcRenderer.invoke("presentation:move-to-display", displayId),
+      return () => {
+        ipcRenderer.removeListener("reading:close", handler);
+      };
+    },
   },
 
   // ==================================================

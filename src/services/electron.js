@@ -1,32 +1,19 @@
 export const electronAPI = {
-  displays: {
-    getAll: () => window.electronAPI.displays.getAll(),
+  app: {
+    getMode: () => window.electronAPI.app.getMode(),
 
-    getPrimary: () => window.electronAPI.displays.getPrimary(),
+    setMode: (mode) => window.electronAPI.app.setMode(mode),
 
-    getBounds: (displayId) => window.electronAPI.displays.getBounds(displayId),
+    onModeChanged: (callback) => window.electronAPI.app.onModeChanged(callback),
   },
 
-  notes: {
-    open: (displayId) => window.electronAPI.notes.open(displayId),
+  reading: {
+    open: () => window.electronAPI.reading.open(),
 
-    close: () => window.electronAPI.notes.close(),
+    close: () => window.electronAPI.reading.close(),
 
-    isOpen: () => window.electronAPI.notes.isOpen(),
+    onOpen: (callback) => window.electronAPI.reading.onOpen(callback),
 
-    moveToDisplay: (displayId) =>
-      window.electronAPI.notes.moveToDisplay(displayId),
-  },
-
-  presentation: {
-    open: (displayId) => window.electronAPI.presentation.open(displayId),
-
-    close: () => window.electronAPI.presentation.close(),
-
-    isOpen: () => window.electronAPI.presentation.isOpen(),
-
-    moveToDisplay: (displayId) =>
-      window.electronAPI.presentation.moveToDisplay(displayId),
+    onClose: (callback) => window.electronAPI.reading.onClose(callback),
   },
 };
-  

@@ -1,154 +1,103 @@
-import DisplaySelector from "./components/DisplaySelector.jsx";
-import NotesEditor from "./components/NotesEditor.jsx";
-import PresentationView from "./components/PresentationView.jsx";
-import WindowControls from "./components/WindowControls.jsx";
+import { useEffect, useState } from "react";
 
-import { useDisplayAssignment } from "./hooks/useDisplayAssignment.js";
-import { useDisplays } from "./hooks/useDisplays.js";
+import NotesEditor from "./components/NotesEditor.jsx";
+
+import { getAppMode, saveAppMode } from "./services/appModeStorage.js";
 
 function App() {
-  const windowType = window.location.hash;
+  const [mode, setMode] = useState(() => getAppMode());
 
-  if (windowType === "#presentation") {
-    return <PresentationView />;
-  }
+  // ==================================================
+  // Mode
+  // ==================================================
 
-  return <Home />;
-}
+  useEffect(() => {
+    const removeModeListener = window.electronAPI?.app?.onModeChanged(
+      (newMode) => {
+        const normalizedMode = newMode === "public" ? "public" : "private";
 
-function Home() {
-  const { displays, primaryDisplay, loading, error, refreshDisplays } =
-    useDisplays();
+        saveAppMode(normalizedMode);
 
-  const {
-    notesDisplayId,
-    presentationDisplayId,
-    assignNotesDisplay,
-    assignPresentationDisplay,
-    clearAssignment,
-    getDisplayRole,
-  } = useDisplayAssignment();
+        setMode(normalizedMode);
+      },
+    );
+
+    return () => {
+      removeModeListener?.();
+    };
+  }, []);
+
+  const handleModeChange = (newMode) => {
+    const normalizedMode = newMode === "public" ? "public" : "private";
+
+    saveAppMode(normalizedMode);
+
+    setMode(normalizedMode);
+
+    window.electronAPI?.app?.setMode(normalizedMode);
+  };
 
   return (
-    <main className="min-h-screen w-full bg-slate-950 text-white">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col">
-        {/* ================================================== */}
-        {/* Header */}
-        {/* ================================================== */}
+    <main className="flex h-dvh w-full flex-col overflow-hidden bg-slate-950 text-white">
+      {/* ==================================================
+          Header
+      ================================================== */}
 
-        <header className="shrink-0 border-b border-slate-800 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <h1 className="truncate text-lg font-bold sm:text-xl lg:text-2xl">
-                PrivateNotes
-              </h1>
+      <header className="shrink-0 border-b border-slate-800 px-4 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
+          {/* Brand */}
 
-              <p className="mt-1 truncate text-[11px] text-slate-500 sm:text-xs lg:text-sm">
-                Private Presentation Notebook
-              </p>
-            </div>
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-bold sm:text-xl">
+              PrivateNotes
+            </h1>
 
-            <div className="shrink-0 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 sm:px-3 sm:py-2">
-              <span className="text-[10px] text-emerald-400 sm:text-xs">
-                ● Notebook
-              </span>
-            </div>
+            <p className="mt-1 hidden text-xs text-slate-500 sm:block">
+              Personal Notes & Reading
+            </p>
           </div>
-        </header>
 
-        {/* ================================================== */}
-        {/* Notes Editor */}
-        {/* ================================================== */}
+          {/* Mode */}
 
-        <section className="min-h-0 flex-1">
-          <NotesEditor />
-        </section>
+          <div className="flex shrink-0 items-center gap-2">
+            <span
+              className={[
+                "hidden rounded-md border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:inline-block",
 
-        {/* ================================================== */}
-        {/* Bottom Control Area */}
-        {/* ================================================== */}
+                mode === "private"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-400"
+                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-400",
+              ].join(" ")}
+            >
+              {mode === "private" ? "Private Mode" : "Public Mode"}
+            </span>
 
-        <section className="shrink-0 border-t border-slate-800 bg-slate-950 px-3 py-4 sm:px-5 sm:py-5 lg:px-8">
-          <div className="mx-auto w-full max-w-6xl">
-            {/* ================================================== */}
-            {/* Window Controls */}
-            {/* ================================================== */}
+            <button
+              type="button"
+              onClick={() =>
+                handleModeChange(mode === "private" ? "public" : "private")
+              }
+              className={[
+                "rounded-lg border px-3 py-2 text-xs font-medium transition",
 
-            <div className="mb-4">
-              <WindowControls
-                notesDisplayId={notesDisplayId}
-                presentationDisplayId={presentationDisplayId}
-              />
-            </div>
-
-            {/* ================================================== */}
-            {/* Assigned Displays */}
-            {/* ================================================== */}
-
-            <section className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {/* Notes Display */}
-
-              <div className="min-w-0 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-3.5 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-sm">
-                    📝
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 sm:text-xs">
-                      Private Notes Display
-                    </p>
-
-                    <p className="mt-1.5 truncate text-xs text-slate-400 sm:text-sm">
-                      {notesDisplayId
-                        ? `Display ID: ${notesDisplayId}`
-                        : "Not assigned"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Presentation Display */}
-
-              <div className="min-w-0 rounded-xl border border-blue-500/20 bg-blue-500/[0.04] p-3.5 sm:p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-500/20 bg-blue-500/10 text-sm">
-                    📺
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-400 sm:text-xs">
-                      Presentation Display
-                    </p>
-
-                    <p className="mt-1.5 truncate text-xs text-slate-400 sm:text-sm">
-                      {presentationDisplayId
-                        ? `Display ID: ${presentationDisplayId}`
-                        : "Not assigned"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ================================================== */}
-            {/* Display Selector */}
-            {/* ================================================== */}
-
-            <DisplaySelector
-              displays={displays}
-              primaryDisplay={primaryDisplay}
-              loading={loading}
-              error={error}
-              onRefresh={refreshDisplays}
-              getDisplayRole={getDisplayRole}
-              onAssignNotes={assignNotesDisplay}
-              onAssignPresentation={assignPresentationDisplay}
-              onClear={clearAssignment}
-            />
+                mode === "private"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-400 hover:bg-amber-500/10"
+                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10",
+              ].join(" ")}
+            >
+              {mode === "private" ? "Private" : "Public"}
+            </button>
           </div>
-        </section>
-      </div>
+        </div>
+      </header>
+
+      {/* ==================================================
+          Notes
+      ================================================== */}
+
+      <section className="min-h-0 flex-1">
+        <NotesEditor />
+      </section>
     </main>
   );
 }

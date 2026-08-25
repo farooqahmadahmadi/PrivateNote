@@ -14,8 +14,11 @@ function normalizeNotes(notes) {
         typeof note.content === "string",
     )
     .map((note) => ({
-      ...note,
-      isPrivate: note.isPrivate !== false,
+      id: note.id,
+      title: note.title,
+      content: note.content,
+      createdAt: note.createdAt || Date.now(),
+      updatedAt: note.updatedAt || Date.now(),
     }));
 }
 
@@ -30,6 +33,7 @@ export function getNotes() {
     return normalizeNotes(JSON.parse(stored));
   } catch (error) {
     console.error("Failed to load notes:", error);
+
     return [];
   }
 }
@@ -41,6 +45,7 @@ export function saveNotes(notes) {
     return true;
   } catch (error) {
     console.error("Failed to save notes:", error);
+
     return false;
   }
 }
@@ -54,7 +59,6 @@ export function createNote(note) {
     id: note.id,
     title: note.title || "Untitled Note",
     content: note.content || "",
-    isPrivate: note.isPrivate !== false,
     createdAt: note.createdAt || now,
     updatedAt: now,
   };
@@ -63,6 +67,7 @@ export function createNote(note) {
 
   if (!success) {
     console.error("Failed to create note.");
+
     return null;
   }
 

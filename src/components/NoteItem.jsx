@@ -1,8 +1,6 @@
 import { formatNoteDate, getNotePreview } from "../utils/noteUtils.js";
 
 function NoteItem({ note, active, onSelect, onDelete }) {
-  const isPrivate = note.isPrivate !== false;
-
   const handleDelete = (event) => {
     event.stopPropagation();
 
@@ -13,6 +11,7 @@ function NoteItem({ note, active, onSelect, onDelete }) {
     <div
       className={[
         "w-full rounded-xl border p-3 transition",
+
         active
           ? "border-blue-500/40 bg-blue-500/10"
           : "border-slate-800 bg-slate-900 hover:bg-slate-800",
@@ -23,21 +22,8 @@ function NoteItem({ note, active, onSelect, onDelete }) {
         onClick={() => onSelect(note.id)}
         className="w-full text-left"
       >
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 truncate text-sm font-medium text-slate-100">
-            {note.title || "Untitled Note"}
-          </div>
-
-          <span
-            className={[
-              "shrink-0 rounded-md px-1.5 py-0.5 text-[10px]",
-              isPrivate
-                ? "bg-amber-500/10 text-amber-400"
-                : "bg-emerald-500/10 text-emerald-400",
-            ].join(" ")}
-          >
-            {isPrivate ? "Private" : "Public"}
-          </span>
+        <div className="min-w-0 truncate text-sm font-medium text-slate-100">
+          {note.title || "Untitled Note"}
         </div>
 
         <div className="mt-1 line-clamp-2 text-xs text-slate-500">
