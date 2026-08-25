@@ -142,6 +142,42 @@ function NotesEditor() {
   };
 
   // ==================================================
+  // Export Note
+  // ==================================================
+
+  const handleExportNote = (noteId) => {
+    const note = notes.find((item) => item.id === noteId);
+
+    if (!note) {
+      return;
+    }
+
+    const title = note.title?.trim() || "Untitled Note";
+    const content = note.content || "";
+
+    const fileContent = `${title}\n\n${content}`;
+
+    const blob = new Blob([fileContent], {
+      type: "text/plain;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${
+      title.replace(/[<>:"/\\|?*\x00-\x1F]/g, "").trim() || "Untitled Note"
+    }.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
+  // ==================================================
   // Reading Mode
   // ==================================================
 
@@ -338,6 +374,7 @@ function NotesEditor() {
             onSelect={handleSelect}
             onCreate={handleCreate}
             onDelete={handleDelete}
+            onExport={handleExportNote}
           />
         </div>
       </aside>
