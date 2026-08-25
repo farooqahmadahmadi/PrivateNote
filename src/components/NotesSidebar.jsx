@@ -22,7 +22,10 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
 
   return (
     <aside className="flex h-full w-full flex-col border-r border-slate-800 bg-slate-950">
-      {/* Header */}
+      {/* ==================================================
+          Header
+      ================================================== */}
+
       <div className="shrink-0 border-b border-slate-800 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -43,6 +46,7 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         </div>
 
         {/* Search */}
+
         <div className="mt-4">
           <input
             type="search"
@@ -54,8 +58,18 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
         </div>
       </div>
 
-      {/* Notes */}
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
+      {/* ==================================================
+          Notes
+          Scroll works, scrollbar hidden
+      ================================================== */}
+
+      <div
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
         {filteredNotes.length === 0 ? (
           <div className="px-3 py-10 text-center text-sm text-slate-600">
             {search ? "No matching notes." : "No notes yet."}
@@ -72,6 +86,16 @@ function NotesSidebar({ notes, activeNoteId, onSelect, onCreate, onDelete }) {
           ))
         )}
       </div>
+
+      {/* Hide scrollbar for Chrome / Electron */}
+
+      <style>
+        {`
+          aside > div:last-child::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
     </aside>
   );
 }

@@ -208,7 +208,6 @@ function NotesEditor() {
 
     const noteToDelete = notes.find((note) => note.id === noteId);
 
-    // Confirmation for every delete action.
     if (askConfirmation) {
       const confirmed = window.confirm(
         `Delete "${noteToDelete?.title || "Untitled Note"}"?`,
@@ -354,25 +353,13 @@ function NotesEditor() {
       <section className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {!activeNote ? (
           <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
-            <div className="absolute left-3 top-3 z-20">
-              <button
-                type="button"
-                onClick={() => setSidebarOpen((current) => !current)}
-                className="rounded-lg border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs font-medium text-slate-400 shadow-lg transition hover:bg-slate-800 hover:text-white"
-              >
-                {sidebarOpen ? "← Notes" : "☰ Notes"}
-              </button>
-            </div>
-
             <div className="min-h-0 min-w-0 flex-1">
               <EmptyNotes />
             </div>
           </div>
         ) : (
           <>
-            {/* ==================================================
-                Toolbar
-            ================================================== */}
+            {/* Toolbar */}
 
             <div className="min-w-0 shrink-0">
               <NoteToolbar
@@ -385,9 +372,7 @@ function NotesEditor() {
               />
             </div>
 
-            {/* ==================================================
-                Editor Content
-            ================================================== */}
+            {/* Editor Content */}
 
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
               {/* Title */}

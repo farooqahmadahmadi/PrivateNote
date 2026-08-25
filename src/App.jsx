@@ -27,6 +27,10 @@ function App() {
     };
   }, []);
 
+  // ==================================================
+  // Mode Change
+  // ==================================================
+
   const handleModeChange = (newMode) => {
     const normalizedMode = newMode === "public" ? "public" : "private";
 
@@ -57,36 +61,43 @@ function App() {
             </p>
           </div>
 
-          {/* Mode */}
+          {/* ==================================================
+              Mode Status Light
+          ================================================== */}
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div
+            className="flex shrink-0 items-center justify-center"
+            title={mode === "private" ? "Private Mode" : "Public Mode"}
+            aria-label={mode === "private" ? "Private Mode" : "Public Mode"}
+          >
             <span
               className={[
-                "hidden rounded-md border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:inline-block",
+                "relative flex h-3.5 w-3.5 items-center justify-center",
+                "rounded-full",
+                "animate-pulse",
 
                 mode === "private"
-                  ? "border-amber-500/20 bg-amber-500/5 text-amber-400"
-                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-400",
+                  ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"
+                  : "bg-amber-400 shadow-[0_0_10px_rgba(96,165,250,0.8)]",
               ].join(" ")}
             >
-              {mode === "private" ? "Private Mode" : "Public Mode"}
+              <span
+                className={[
+                  "absolute inset-0 rounded-full opacity-40",
+                  "animate-ping",
+
+                  mode === "private" ? "bg-emerald-400" : "bg-blue-400",
+                ].join(" ")}
+              />
+
+              <span
+                className={[
+                  "relative h-1.5 w-1.5 rounded-full",
+
+                  mode === "private" ? "bg-emerald-100" : "bg-blue-100",
+                ].join(" ")}
+              />
             </span>
-
-            <button
-              type="button"
-              onClick={() =>
-                handleModeChange(mode === "private" ? "public" : "private")
-              }
-              className={[
-                "rounded-lg border px-3 py-2 text-xs font-medium transition",
-
-                mode === "private"
-                  ? "border-amber-500/20 bg-amber-500/5 text-amber-400 hover:bg-amber-500/10"
-                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10",
-              ].join(" ")}
-            >
-              {mode === "private" ? "Private" : "Public"}
-            </button>
           </div>
         </div>
       </header>
